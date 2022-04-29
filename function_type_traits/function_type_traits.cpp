@@ -1,4 +1,7 @@
 #include "function_type_traits.h"
+//import function_type_traits;
+#include <type_traits>
+
 using namespace function_type_traits;
 
 
@@ -25,13 +28,13 @@ struct MyClass
 	void MemberFunctionVariadic(...) {}
 	void MemberFunctionVariadicArgs(char, int, double*, ...) {}
 
-	void MemberFunctionNoexcept() noexcept;
+	void MemberFunctionNoexcept() noexcept {}
 
-	void MemberFunctionConst() const;
-	void MemberFunctionVolatile() volatile;
+	void MemberFunctionConst() const {}
+	void MemberFunctionVolatile() volatile {}
 
-	void MemberFunctionLRef()&;
-	void MemberFunctionRRef()&&;
+	void MemberFunctionLRef()& {}
+	void MemberFunctionRRef()&& {}
 
 	[[maybe_unused]] static void MemberFunctionStatic() {}
 };
@@ -44,7 +47,7 @@ static_assert(std::is_same_v<fn_traits<&FreeFunction>::class_type, void>);
 static_assert(std::is_same_v<fn_traits<&MyClass::MemberFunction>::class_type, MyClass>);
 static_assert(std::is_same_v<fn_traits<&MyClass::MemberFunctionStatic>::class_type, void>);
 
-// Validate cv, ref and noexcept qualifiers
+// Validate const, voliatile, ref and noexcept qualifiers
 static_assert(fn_traits<&MyClass::MemberFunction>::noexcept_v == false);
 static_assert(fn_traits<&MyClass::MemberFunctionNoexcept>::noexcept_v == true);
 static_assert(fn_traits<&MyClass::MemberFunction>::const_qualified == false);
