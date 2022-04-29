@@ -6,6 +6,20 @@ namespace function_type_traits
 {
 	namespace detail
 	{
+		// Use the standard library in c++20 mode
+		#ifdef __cpp_lib_remove_cvref
+		template< class T >
+		using remove_cvref_t = std::remove_cvref_t<T>;
+		#else 
+		template< class T >
+		struct remove_cvref
+		{
+			typedef std::remove_cv_t<std::remove_reference_t<T>> type;
+		};
+		template< class T > 
+		using remove_cvref_t = typename remove_cvref<T>::type;
+		#endif
+
 		template <typename T>
 		struct function_type_traits_impl
 		{
@@ -145,9 +159,9 @@ namespace function_type_traits
 
 
 	template <typename FnType>
-	struct fn_type_traits : detail::function_type_traits_impl<std::remove_cvref_t<std::remove_pointer_t<FnType>>>
+	struct fn_type_traits : detail::function_type_traits_impl<detail::remove_cvref_t<std::remove_pointer_t<FnType>>>
 	{
-		using identity = detail::function_type_traits_impl<std::remove_cvref_t<std::remove_pointer_t<FnType>>>;
+		using identity = detail::function_type_traits_impl<detail::remove_cvref_t<std::remove_pointer_t<FnType>>>;
 	};
 
 
